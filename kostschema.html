@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kostschema — Lean Phase 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f2ed;
+    --surface: #fff;
+    --card: #ffffff;
+    --border: #e2ddd6;
+    --accent: #1a1a1a;
+    --green: #2d6a4f;
+    --green-light: #d8f3dc;
+    --orange: #c05c1a;
+    --orange-light: #fde8d8;
+    --blue: #1a4a7a;
+    --blue-light: #dbeafe;
+    --purple: #5b21b6;
+    --purple-light: #ede9fe;
+    --muted: #8a8078;
+    --text: #1a1a1a;
+    --protein-col: #2d6a4f;
+    --carb-col: #1a4a7a;
+    --fat-col: #c05c1a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .hero {
+    background: var(--accent);
+    color: #fff;
+    padding: 52px 32px 44px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '2200';
+    position: absolute;
+    right: -10px; bottom: -30px;
+    font-family: 'Syne', sans-serif;
+    font-size: 160px; font-weight: 800;
+    color: rgba(255,255,255,0.04);
+    letter-spacing: -8px;
+    pointer-events: none; line-height: 1;
+  }
+  .hero-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45); margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 7vw, 64px);
+    font-weight: 800; line-height: 1.05; letter-spacing: -1px;
+  }
+  .hero-accent { color: #a8e6bc; }
+  .hero-meta { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .hero-pill {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 100px; padding: 6px 14px;
+    font-size: 12px; font-weight: 500;
+  }
+  .hero-pill.new {
+    background: rgba(168,230,188,0.2);
+    border-color: rgba(168,230,188,0.4);
+    color: #a8e6bc;
+  }
+
+  .macro-banner {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--border);
+  }
+  .mb-cell {
+    padding: 20px 24px; background: var(--surface);
+    border-right: 1px solid var(--border); text-align: center;
+  }
+  .mb-cell:last-child { border-right: none; }
+  .mb-val { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; line-height: 1; }
+  .mb-unit { font-size: 13px; font-weight: 400; opacity: 0.6; }
+  .mb-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-top: 5px; }
+  .c-kcal { color: var(--accent); }
+  .c-prot { color: var(--protein-col); }
+  .c-carb { color: var(--carb-col); }
+  .c-fat  { color: var(--fat-col); }
+
+  .wrap { max-width: 820px; margin: 0 auto; padding: 36px 16px 64px; }
+
+  .section-head {
+    display: flex; align-items: baseline; gap: 14px; margin: 44px 0 6px;
+  }
+  .section-head h2 {
+    font-family: 'Syne', sans-serif; font-size: 22px;
+    font-weight: 700; letter-spacing: -0.3px; white-space: nowrap;
+  }
+  .section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .section-sub { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
+
+  /* MEAL CARD */
+  .meal { background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 14px; overflow: hidden; }
+
+  .meal.shake-card { border-color: #c4b5fd; background: #faf8ff; }
+  .meal.shake-card .meal-top { background: #f3f0ff; }
+
+  .meal-top {
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+  }
+  .shake-card .meal-top { border-color: #c4b5fd; }
+
+  .meal-num {
+    width: 34px; height: 34px;
+    background: var(--accent); color: #fff;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .shake-card .meal-num { background: var(--purple); }
+
+  .meal-info { flex: 1; }
+  .meal-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; }
+  .meal-time { font-size: 12px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+
+  .shake-badge {
+    background: var(--purple); color: #fff;
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 4px; font-weight: 600;
+    margin-left: 8px; font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .meal-kcal-badge {
+    background: var(--accent); color: #fff;
+    border-radius: 8px; padding: 6px 12px;
+    font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700;
+    white-space: nowrap;
+  }
+  .shake-card .meal-kcal-badge { background: var(--purple); }
+  .meal-kcal-badge small {
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 10px;
+    font-weight: 400; opacity: 0.7; margin-left: 2px;
+  }
+
+  .meal-items { padding: 4px 20px 8px; }
+  .food-row {
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 9px 0; border-bottom: 1px solid #f0ece6;
+  }
+  .food-row:last-child { border-bottom: none; }
+  .food-name-col { flex: 1; font-size: 14px; }
+  .food-gram-col {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    background: #f0f7f3; color: var(--green);
+    padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+  }
+  .shake-card .food-gram-col { background: #f0ebff; color: var(--purple); }
+  .food-kcal-col {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    color: var(--muted); min-width: 55px; text-align: right;
+  }
+
+  .meal-macros {
+    display: flex; gap: 0;
+    border-top: 1px solid var(--border);
+  }
+  .shake-card .meal-macros { border-color: #c4b5fd; }
+  .mm {
+    flex: 1; padding: 9px 12px; text-align: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    border-right: 1px solid var(--border);
+  }
+  .shake-card .mm { border-color: #c4b5fd; }
+  .mm:last-child { border-right: none; }
+  .mm-val { font-weight: 500; font-size: 14px; display: block; }
+  .mm-lbl { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.55; margin-top: 1px; }
+  .mm-p .mm-val { color: var(--protein-col); }
+  .mm-c .mm-val { color: var(--carb-col); }
+  .mm-f .mm-val { color: var(--fat-col); }
+
+  /* TOTAL BOX */
+  .total-box {
+    background: var(--accent); color: #fff;
+    border-radius: 14px; padding: 24px 28px; margin-top: 8px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 24px;
+  }
+  .tb-eyebrow { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; margin-bottom: 4px; }
+  .tb-kcal { font-family: 'Syne', sans-serif; font-size: 52px; font-weight: 800; line-height: 1; letter-spacing: -2px; }
+  .tb-kcal span { font-size: 18px; font-weight: 400; opacity: 0.6; letter-spacing: 0; margin-left: 4px; }
+  .tb-right { margin-left: auto; display: flex; gap: 28px; flex-wrap: wrap; }
+  .tb-macro { text-align: center; }
+  .tb-macro-val { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; line-height: 1; }
+  .tb-macro-lbl { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.5; margin-top: 3px; }
+  .tbm-p { color: #a8e6bc; }
+  .tbm-c { color: #93c5fd; }
+  .tbm-f { color: #fcd9b6; }
+
+  /* OPTION CARDS */
+  .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  @media (max-width: 560px) { .option-grid { grid-template-columns: 1fr; } }
+
+  .option-card {
+    border-radius: 14px; overflow: hidden;
+    border: 2px solid var(--border);
+  }
+  .option-card.opt-a { border-color: #a7f3d0; }
+  .option-card.opt-b { border-color: #c4b5fd; }
+
+  .opt-header {
+    padding: 12px 18px;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .opt-a .opt-header { background: #ecfdf5; color: var(--green); }
+  .opt-b .opt-header { background: #f3f0ff; color: var(--purple); }
+  .opt-kcal { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 400; opacity: 0.7; }
+
+  .opt-body { padding: 10px 18px 6px; background: #fff; }
+  .opt-row { display: flex; gap: 8px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid #f0ece6; font-size: 13px; }
+  .opt-row:last-child { border-bottom: none; }
+  .opt-g { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 2px 6px; border-radius: 4px; }
+  .opt-a .opt-g { color: var(--green); background: #f0f7f3; }
+  .opt-b .opt-g { color: var(--purple); background: #f0ebff; }
+
+  .opt-macros {
+    display: flex; gap: 12px; padding: 8px 18px;
+    border-top: 1px solid #f0ece6;
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    background: #faf8f5;
+  }
+  .opt-note {
+    padding: 10px 18px 12px; background: #fff;
+    font-size: 12px; color: var(--muted); font-style: italic;
+    border-top: 1px solid #f0ece6;
+  }
+
+  /* TOTAL COMPARE */
+  .compare-box {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 4px;
+  }
+  @media (max-width: 560px) { .compare-box { grid-template-columns: 1fr; } }
+
+  .cmp-card {
+    border-radius: 12px; padding: 18px 20px;
+    border: 2px solid var(--border);
+  }
+  .cmp-a { border-color: #a7f3d0; background: #f0fdf4; }
+  .cmp-b { border-color: #c4b5fd; background: #faf8ff; }
+  .cmp-title {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+    margin-bottom: 12px;
+  }
+  .cmp-a .cmp-title { color: var(--green); }
+  .cmp-b .cmp-title { color: var(--purple); }
+  .cmp-row {
+    display: flex; justify-content: space-between;
+    padding: 5px 0; font-size: 13px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  .cmp-row:last-child { border-bottom: none; }
+  .cmp-val { font-family: 'IBM Plex Mono', monospace; font-weight: 500; }
+
+  /* REST NOTE */
+  .rest-note {
+    background: var(--orange-light); border: 1px solid #f3c9ac;
+    border-radius: 10px; padding: 14px 18px; margin-top: 16px;
+    font-size: 13px; color: #7a3510; line-height: 1.6;
+  }
+  .rest-note strong { color: var(--orange); }
+
+  /* TIPS */
+  .tips-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 4px; }
+  .tip {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px;
+    font-size: 13px; color: var(--muted); line-height: 1.6;
+  }
+  .tip strong { color: var(--text); font-size: 14px; display: block; margin-bottom: 4px; font-family: 'Syne', sans-serif; }
+
+  .footer {
+    text-align: center; padding: 28px 16px;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); border-top: 1px solid var(--border); margin-top: 40px;
+  }
+
+  @media (max-width: 480px) {
+    .macro-banner { grid-template-columns: repeat(2, 1fr); }
+    .mb-cell:nth-child(2) { border-right: none; }
+    .mb-cell:nth-child(3) { border-top: 1px solid var(--border); }
+    .tb-right { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow">Lean Phase · April – 20 Juni 2026</div>
+  <h1>KOSTSCHEMA<br><span class="hero-accent">2 218 KCAL</span></h1>
+  <div class="hero-meta">
+    <div class="hero-pill">23 år · 177 cm · 78 kg</div>
+    <div class="hero-pill">Styrketräning 4×/vecka</div>
+    <div class="hero-pill">~500-700 kcal underskott</div>
+    <div class="hero-pill new">✦ Whey från Tyngre inlagt</div>
+  </div>
+</div>
+
+<div class="macro-banner">
+  <div class="mb-cell">
+    <div class="mb-val c-kcal">2 218<span class="mb-unit"> kcal</span></div>
+    <div class="mb-label">Totalt per dag (1940kcal utan shake)</div>
+  </div>
+  <div class="mb-cell">
+    <div class="mb-val c-prot">187g</div>
+    <div class="mb-label">Protein (150g utan shake)</div>
+  </div>
+  <div class="mb-cell">
+    <div class="mb-val c-carb">210g</div>
+    <div class="mb-label">Kolhydrater (190g utan shake)</div>
+  </div>
+  <div class="mb-cell">
+    <div class="mb-val c-fat">62g</div>
+    <div class="mb-label">Fett (55g utan shake)</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="section-head"><h2>Dagligt Kostschema</h2></div>
+  <div class="section-sub">Träningsdagar — whey tas direkt efter gymmet som måltid 4. Kvällsalternativ visas nedan.</div>
+
+  <!-- M1 FRUKOST -->
+  <div class="meal">
+    <div class="meal-top">
+      <div class="meal-num">1</div>
+      <div class="meal-info">
+        <div class="meal-name">Frukost</div>
+        <div class="meal-time">07:00 – 08:00</div>
+      </div>
+      <div class="meal-kcal-badge">528 <small>kcal</small></div>
+    </div>
+    <div class="meal-items">
+      <div class="food-row"><div class="food-name-col">Ägg (hela, stekta eller kokta)</div><div class="food-gram-col">3 st · 180g</div><div class="food-kcal-col">~220 kcal</div></div>
+      <div class="food-row"><div class="food-name-col">Kokt potatis (kall från kvällen)</div><div class="food-gram-col">250g</div><div class="food-kcal-col">~195 kcal</div></div>
+      <div class="food-row"><div class="food-name-col">Keso (naturell)</div><div class="food-gram-col">100g</div><div class="food-kcal-col">~93 kcal</div></div>
+      <div class="food-row"><div class="food-name-col">Tomat + gurka</div><div class="food-gram-col">100g</div><div class="food-kcal-col">~20 kcal</div></div>
+    </div>
+    <div class="meal-macros">
+      <div class="mm mm-p"><span class="mm-val">37g</span><span class="mm-lbl">Protein</span></div>
+      <div class="mm mm-c"><span class="mm-val">50g</span><span class="mm-lbl">Kolhydr.</span></div>
+      <div class="mm mm-f"><span class="mm-val">20g</span><span class="mm-lbl">Fett</span></div>
+    </div>
+  </div>
+
+  <!-- M2 MELLANMÅL -->
+  <div class="meal">
+    <div class="meal-top">
+      <div class="meal-num">2</div>
+      <div class="meal-info">
+        <div class="meal-name">Mellanmål</div>
+        <div class="meal-time">10:30 – 11:00</div>
+      </div>
+      <div class="meal-kcal-badge">239 <small>kcal</small></div>
+    </div>
+    <div class="meal-items">
+      <div class="food-row"><div class="food-name-col">Kvarg (Lidl)</div><div class="food-gram-col">200g</div><div class="food-kcal-col">~130 kcal</div></div>
+      <div class="food-row"><div class="food-name-col">Riskakor (Lidl)</div><div class="food-gram-col">2 st · 24g</div><div class="food-kcal-col">~109 kcal</div></div>
+    </div>
+    <div class="meal-macros">
+      <div class="mm mm-p"><span class="mm-val">22g</span><span class="mm-lbl">Protein</span></div>
+      <div class="mm mm-c"><span class="mm-val">28g</span><span class="mm-lbl">Kolhydr.</span></div>
+      <div class="mm mm-f"><span class="mm-val">5g</span><span class="mm-lbl">Fett</span></div>
+    </div>
+  </div>
+
+  <!-- M3 LUNCH -->
+  <div class="meal">
+    <div class="meal-top">
+      <div class="meal-num">3</div>
+      <div class="meal-info">
+        <div class="meal-name">Lunch</div>
+        <div class="meal-time">13:00 – 14:00</div>
+      </div>
+      <div class="meal-kcal-badge">650 <small>kcal</small></div>
+    </div>
+    <div class="meal-items">
+      <div class="food-row"><div class="food-name-col">Kycklingfilé (stekt i en klick smör)</div><div class="food-gram-col">200g</div><div class="food-kcal-col">~280 kcal</div></div>
+      <div class="food-row"><div class="food-name-col">Kokt vitt ris (rå vikt)</div><div class="food-gram-col">90g rå · 250g kokt</div><div class="food-kcal-col">~330 kcal</div></div>
+      <div class="food-row"><div class="food-name-col">Sallad + tomat + gurka</div><div class="food-gram-col">150g</div><div class="food-kcal-col">~30 kcal</div></div>
+      <div class="food-row"><div class="food-name-col">Soja / kryddor</div><div class="food-gram-col">15ml</div><div class="food-kcal-col">~10 kcal</div></div>
+    </div>
+    <div class="meal-macros">
+      <div class="mm mm-p"><span class="mm-val">51g</span><span class="mm-lbl">Protein</span></div>
+      <div class="mm mm-c"><span class="mm-val">76g</span><span class="mm-lbl">Kolhydr.</span></div>
+      <div class="mm mm-f"><span class="mm-val">7g</span><span class="mm-lbl">Fett</span></div>
+    </div>
+  </div>
+
+  <!-- M4 WHEY POST-WORKOUT -->
+  <div class="meal shake-card">
+    <div class="meal-top">
+      <div class="meal-num">4</div>
+      <div class="meal-info">
+        <div class="meal-name">Post-workout Shake <span class="shake-badge">Tyngre Whey</span></div>
+        <div class="meal-time">Direkt efter gymmet — inom 30–60 min</div>
+      </div>
+      <div class="meal-kcal-badge">277 <small>kcal</small></div>
+    </div>
+    <div class="meal-items">
+      <div class="food-row"><div class="food-name-col">Whey protein (Tyngre)</div><div class="food-gram-col">2 skopor · ~35g</div><div class="food-kcal-col">~137 kcal</div></div>
+      <div class="food-row"><div class="food-name-col">Mjölk (1,5% fett)</div><div class="food-gram-col">300ml</div><div class="food-kcal-col">~140 kcal</div></div>
+    </div>
+    <div class="meal-macros">
+      <div class="mm mm-p"><span class="mm-val">~36g</span><span class="mm-lbl">Protein</span></div>
+      <div class="mm mm-c"><span class="mm-val">18g</span><span class="mm-lbl">Kolhydr.</span></div>
+      <div class="mm mm-f"><span class="mm-val">7g</span><span class="mm-lbl">Fett</span></div>
+    </div>
+  </div>
+
+  <!-- M5 MIDDAG -->
+  <div class="meal">
+    <div class="meal-top">
+      <div class="meal-num">5</div>
+      <div class="meal-info">
+        <div class="meal-name">Middag</div>
+        <div class="meal-time">19:00 – 20:00</div>
+      </div>
+      <div class="meal-kcal-badge">524 <small>kcal</small></div>
+    </div>
+    <div class="meal-items">
+      <div class="food-row"><div class="food-name-col">Nötfärs 90% (eller biff) + liten sked smör</div><div class="food-gram-col">180g</div><div class="food-kcal-col">~350 kcal</div></div>
+      <div class="food-row"><div class="food-name-col">Kokt potatis</div><div class="food-gram-col">200g</div><div class="food-kcal-col">~156 kcal</div></div>
+      <div class="food-row"><div class="food-name-col">Sallad + gurka + tomat</div><div class="food-gram-col">100g</div><div class="food-kcal-col">~18 kcal</div></div>
+    </div>
+    <div class="meal-macros">
+      <div class="mm mm-p"><span class="mm-val">41g</span><span class="mm-lbl">Protein</span></div>
+      <div class="mm mm-c"><span class="mm-val">38g</span><span class="mm-lbl">Kolhydr.</span></div>
+      <div class="mm mm-f"><span class="mm-val">23g</span><span class="mm-lbl">Fett</span></div>
+    </div>
+  </div>
+
+  <!-- EVENING OPTIONS -->
+  <div class="section-head" style="margin-top:32px"><h2>Kvällsmål — Välj ett alternativ</h2></div>
+  <div class="section-sub">Båda funkar bra. Alt A ger mer kalorier och högt protein — välj det om du tränade hårt. Alt B är lättare och passar vilodagar eller om middagen var stor.</div>
+
+  <div class="option-grid">
+    <div class="option-card opt-a">
+      <div class="opt-header">
+        Alt A — Keso + Shake
+        <span class="opt-kcal">~420 kcal</span>
+      </div>
+      <div class="opt-body">
+        <div class="opt-row">Keso (naturell)<div class="opt-g">200g</div></div>
+        <div class="opt-row">Whey shake (½ skopa)<div class="opt-g">20g pulver + 200ml vatten</div></div>
+        <div class="opt-row">Bär / jordgubbar<div class="opt-g">80g</div></div>
+      </div>
+      <div class="opt-macros">
+        <span style="color:var(--protein-col)">P: 52g</span>
+        <span style="color:var(--carb-col)">K: 16g</span>
+        <span style="color:var(--fat-col)">F: 7g</span>
+      </div>
+      <div class="opt-note">Bäst på tunga träningsdagar. Kaseinet i keson + whey = protein hela natten.</div>
+    </div>
+
+    <div class="option-card opt-b">
+      <div class="opt-header">
+        Alt B — Bara Keso
+        <span class="opt-kcal">~215 kcal</span>
+      </div>
+      <div class="opt-body">
+        <div class="opt-row">Keso (naturell)<div class="opt-g">250g</div></div>
+        <div class="opt-row">Bär / jordgubbar<div class="opt-g">80g</div></div>
+        <div class="opt-row" style="color:var(--muted);font-style:italic">Ingen extra shake</div>
+      </div>
+      <div class="opt-macros">
+        <span style="color:var(--protein-col)">P: 32g</span>
+        <span style="color:var(--carb-col)">K: 14g</span>
+        <span style="color:var(--fat-col)">F: 4g</span>
+      </div>
+      <div class="opt-note">Bra på vilodagar eller lätta pass. Håller dig under 2 200 kcal utan cardio.</div>
+    </div>
+  </div>
+
+  <!-- DAILY TOTALS COMPARE -->
+  <div class="compare-box">
+    <div class="cmp-card cmp-a">
+      <div class="cmp-title">✦ Träningsdag (Alt A kväll)</div>
+      <div class="cmp-row"><span>Kalorier</span><span class="cmp-val">~2 370 kcal</span></div>
+      <div class="cmp-row"><span>Protein</span><span class="cmp-val" style="color:var(--protein-col)">~223g</span></div>
+      <div class="cmp-row"><span>Kolhydrater</span><span class="cmp-val" style="color:var(--carb-col)">~202g</span></div>
+      <div class="cmp-row"><span>Fett</span><span class="cmp-val" style="color:var(--fat-col)">~65g</span></div>
+    </div>
+    <div class="cmp-card cmp-b">
+      <div class="cmp-title">✦ Vilodagar (Alt B kväll)</div>
+      <div class="cmp-row"><span>Kalorier</span><span class="cmp-val">~2 165 kcal</span></div>
+      <div class="cmp-row"><span>Protein</span><span class="cmp-val" style="color:var(--protein-col)">~203g</span></div>
+      <div class="cmp-row"><span>Kolhydrater</span><span class="cmp-val" style="color:var(--carb-col)">~200g</span></div>
+      <div class="cmp-row"><span>Fett</span><span class="cmp-val" style="color:var(--fat-col)">~62g</span></div>
+    </div>
+  </div>
+
+  <div class="rest-note" style="margin-top:16px">
+    <strong>Vilodagar (ingen shake post-workout):</strong> Hoppa över måltid 4 (shake) och välj Alt B på kvällen. Minska riset i lunchen med 20g rå vikt. Hamnar på ~1 900–2 000 kcal — perfekt vilodagsunderskott.
+  </div>
+
+  <!-- TIPS -->
+  <div class="section-head"><h2>Tips & Shakeinfo</h2></div>
+  <div class="tips-list">
+    <div class="tip">
+      <strong>🥛 Mixa shaken rätt</strong>
+      1,5 skopor Tyngre Whey + 300ml kall mjölk (1,5%) = ~40g protein och bra konsistens. Vatten funkar om du vill spara kalorier.
+    </div>
+    <div class="tip">
+      <strong>⏱ Timing spelar roll</strong>
+      Ta shaken inom 30–60 min efter gymmet. Inte akut, men det är din bästa möjlighet att mata musklerna när de är känsliga.
+    </div>
+    <div class="tip">
+      <strong>🍌 Lägg till banan vid tunga pass</strong>
+      Squat/deadlift-dag? Addera ½ banan i shaken för extra glykogen. +55 kcal och ~13g snabba kolhydrater.
+    </div>
+    <div class="tip">
+      <strong>📊 Protein redan högt</strong>
+      Med whey landar du på 200–220g protein/dag — klart över målet på 170g. Det är bra: marginal för variation och inga gissningar.
+    </div>
+    <div class="tip">
+      <strong>🍳 Meal prep söndag</strong>
+      Koka 400g ris, 500g potatis, 600g kyckling. Portionera i burkar. Shaken blandar du alltid färsk — tar 30 sekunder.
+    </div>
+    <div class="tip">
+      <strong>⚖️ Justering om vikten stannar</strong>
+      Sjunker du inte ~0,5 kg/vecka efter 2 veckor: sänk riset i lunchen med 20g rå vikt. Håll alltid proteinet konstant.
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Lean Phase · April – 20 Juni 2026 · 177 cm / 78 kg · Tyngre Whey inlagt · ~2 200 kcal
+</div>
+
+</body>
+</html>
